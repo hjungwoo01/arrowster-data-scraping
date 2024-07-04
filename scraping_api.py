@@ -32,6 +32,37 @@ def get_top_universities():
     
     return universities
 
+def get_times_global_universities():
+    universities = []
+    url = "https://www.timeshighereducation.com/sites/default/files/the_data_rankings/world_university_rankings_2024_0__91239a4509dc50911f1949984e3fb8c5.json"
+    session = requests.Session()
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+    }
+    response = session.get(url, headers=headers)
+    response.raise_for_status()
+    data = response.json().get('data', [])
+    
+    for item in data:
+        university = {
+            'Rank': item.get('rank', ''),
+            'Name': item.get('name', ''),
+            'Location': item.get('location', ''),
+            'Overall Score': item.get('scores_overall', ''),
+            'Teaching Score': item.get('scores_teaching', ''),
+            'Research Score': item.get('scores_research', ''),
+            'Citations Score': item.get('scores_citations', ''),
+            'Industry Income Score': item.get('scores_industry_income', ''),
+            'International Outlook Score': item.get('scores_international_outlook', ''),
+            'Number of Students': item.get('stats_number_students', ''),
+            'Student-Staff Ratio': item.get('stats_student_staff_ratio', ''),
+            'International Students Percentage': item.get('stats_pc_intl_students', ''),
+            'Female-Male Ratio': item.get('stats_female_male_ratio', '')
+        }
+        universities.append(university)
+
+    return universities
+
 def get_usnews_universities():
     universities = []
     session = requests.Session()
@@ -111,11 +142,13 @@ def save_to_csv(data, filename):
     df.to_csv(filename, index=False)
 
 if __name__ == "__main__":
-    top_universities_rankings = get_top_universities()
+    # top_universities_rankings = get_top_universities()
+    times_global_rankings = get_times_global_universities()
     # usnews_rankings = get_usnews_universities()
     # niche_rankings = get_niche_universities()
     
-    save_to_csv(top_universities_rankings, 'topuniversities_rankings.csv')
+    # save_to_csv(top_universities_rankings, 'topuniversities_rankings.csv')
+    save_to_csv(times_global_rankings, 'times_global_rankings.csv')
     # save_to_csv(usnews_rankings, 'usnews_rankings.csv')
     # save_to_csv(niche_rankings, 'niche_rankings.csv')
 
